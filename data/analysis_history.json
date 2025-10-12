@@ -1,0 +1,29 @@
+[
+  {
+    "symbol": "AAPL",
+    "signal": "HOLD",
+    "current_price": 245.27000427246094,
+    "high_20d": null,
+    "low_10d": null,
+    "timestamp": "2025-10-10T21:52:39.426834",
+    "analysis_id": 1
+  },
+  {
+    "symbol": "TSLA",
+    "signal": "HOLD",
+    "current_price": 413.489990234375,
+    "high_20d": null,
+    "low_10d": null,
+    "timestamp": "2025-10-10T21:53:00.105693",
+    "analysis_id": 2
+  },
+  {
+    "symbol": "MSFT",
+    "signal": "HOLD",
+    "current_price": 510.9599914550781,
+    "high_20d": null,
+    "low_10d": null,
+    "timestamp": "2025-10-10T21:53:00.197602",
+    "analysis_id": 3
+  }
+]
