@@ -32,3 +32,8 @@ htmlcov/
 # Data files
 data/
 data/
+
+# Backup files
+*.old
+*.backup
+*.bak
