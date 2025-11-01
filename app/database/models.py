@@ -6,7 +6,7 @@
 
 from sqlalchemy import Column, Integer, String, Float, DateTime, Text, Boolean
 from sqlalchemy.sql import func
-from database.connection import Base
+from app.database.connection import Base  # 更新导入路径
 
 
 class Stock(Base):
@@ -78,7 +78,7 @@ class AlertHistory(Base):
 
 class User(Base):
     """
-    用户表 - 为 Week 6-7 的用户系统预留
+    用户表 - 为 Phase 2 的用户系统预留
 
     现在先定义，但不使用
     """
@@ -97,7 +97,7 @@ class User(Base):
 
 class Subscription(Base):
     """
-    订阅表 - 用户订阅的股票（Week 6-7 使用）
+    订阅表 - 用户订阅的股票（Phase 2 使用）
     """
     __tablename__ = "subscriptions"
 

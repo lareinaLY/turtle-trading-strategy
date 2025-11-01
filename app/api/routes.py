@@ -6,15 +6,17 @@ API 路由 - 集成数据库版本
 
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from typing import List, Optional
 from datetime import datetime
 import json
 
-from schemas import StockRequest, StockResponse, HistoryResponse
-from fetch_data import fetch_data  # 修正：使用正确的函数名
-from strategy import turtle_strategy
-from database.connection import get_db
-from database.models import Stock, AlertHistory
+# 更新导入路径（使用新的模块化结构）
+from app.schemas.stock import StockRequest, StockResponse, HistoryResponse
+from app.services.fetch_data import fetch_data
+from app.services.strategy import turtle_strategy
+from app.database.connection import get_db
+from app.database.models import Stock, AlertHistory
 
 app = FastAPI(
     title="海龟交易策略 API",
@@ -55,16 +57,19 @@ def analyze_stock(
         分析结果，包括信号、价格等信息
     """
     try:
+        # 自动转大写，用户友好
+        symbol = request.symbol.upper()
+
         # 1. 获取股票数据（使用你原来的函数）
         data = fetch_data(
-            request.symbol,
+            symbol,
             request.period  # 只传两个参数
         )
 
-        if data.empty:
+        if data is None or data.empty:  # 先检查是否是 None
             raise HTTPException(
                 status_code=404,
-                detail=f"无法获取 {request.symbol} 的数据"
+                detail=f"无法获取 {symbol} 的数据，请检查股票代码是否正确"
             )
 
         # 2. 运行海龟策略（只返回信号字符串）
@@ -80,7 +85,7 @@ def analyze_stock(
         low_10d = float(data['Low'].iloc[-request.exit_period:].min())
 
         # 4. 更新或创建股票记录
-        stock = db.query(Stock).filter(Stock.symbol == request.symbol).first()
+        stock = db.query(Stock).filter(Stock.symbol == symbol).first()
 
         if stock:
             # 更新现有股票
@@ -89,8 +94,8 @@ def analyze_stock(
         else:
             # 创建新股票
             stock = Stock(
-                symbol=request.symbol,
-                name=request.symbol,  # 可以后续从 API 获取完整名称
+                symbol=symbol,
+                name=symbol,  # 可以后续从 API 获取完整名称
                 current_price=current_price,
                 is_active=True
             )
@@ -98,7 +103,7 @@ def analyze_stock(
 
         # 5. 保存提醒历史
         alert = AlertHistory(
-            symbol=request.symbol,
+            symbol=symbol,
             signal=signal,  # 直接使用字符串
             price=current_price,
             strategy_params=json.dumps({
@@ -107,7 +112,7 @@ def analyze_stock(
                 'entry_price': high_20d,
                 'exit_price': low_10d
             }),
-            message=f"{request.symbol} 当前信号: {signal}",
+            message=f"{symbol} 当前信号: {signal}",
             sent=False  # 还没发送邮件
         )
         db.add(alert)
@@ -119,7 +124,7 @@ def analyze_stock(
 
         # 7. 返回结果
         return StockResponse(
-            symbol=request.symbol,
+            symbol=symbol,
             current_price=current_price,
             signal=signal,
             entry_price=high_20d,
@@ -333,7 +338,6 @@ def health_check(db: Session = Depends(get_db)):
     """
     try:
         # 测试数据库连接（修复 SQL 警告）
-        from sqlalchemy import text
         db.execute(text("SELECT 1"))
 
         # 统计数据

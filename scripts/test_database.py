@@ -9,8 +9,16 @@
 - 删除数据
 """
 
-from database.connection import SessionLocal, init_db, engine
-from database.models import Stock, AlertHistory
+import sys
+from pathlib import Path
+
+# 添加项目根目录到 Python 路径（重要！）
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+# 现在可以正常导入 app 模块了
+from app.database.connection import SessionLocal, init_db, engine
+from app.database.models import Stock, AlertHistory
 from datetime import datetime
 
 

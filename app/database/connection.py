@@ -67,7 +67,7 @@ def init_db():
     创建所有定义的表
     只在第一次运行时需要调用
     """
-    from database.models import Stock, AlertHistory
+    from app.database.models import Stock, AlertHistory  # 更新导入路径
 
     Base.metadata.create_all(bind=engine)
     print("✅ 数据库表创建成功！")
