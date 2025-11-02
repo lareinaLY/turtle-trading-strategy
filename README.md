@@ -2,6 +2,10 @@
 
 > A full-stack web application that provides intelligent stock monitoring and trading signals based on the Turtle Trading Strategy, with AI-powered price prediction (Coming Soon).
 
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-blue.svg)](https://www.postgresql.org/)
+
 ---
 
 ## 🎯 Project Overview
@@ -23,32 +27,49 @@ This project implements a **complete full-stack trading analysis system** that c
 ```
 turtle-trading-strategy/
 │
-├── 📁 database/                # Database Layer (SQLAlchemy ORM)
-│   ├── __init__.py            # Module exports
-│   ├── connection.py          # Database connection & session management
-│   └── models.py              # Data models (Stock, AlertHistory, User, Subscription)
+├── 📁 app/                          # Main application directory
+│   ├── __init__.py                 # App package initialization
+│   ├── main.py                     # Application entry point
+│   │
+│   ├── 📁 api/                     # API Layer
+│   │   ├── __init__.py
+│   │   └── routes.py               # FastAPI endpoints and request handlers
+│   │
+│   ├── 📁 services/                # Business Logic Layer
+│   │   ├── __init__.py
+│   │   ├── fetch_data.py          # Market data fetching (yfinance)
+│   │   ├── strategy.py            # Turtle Trading Strategy implementation
+│   │   ├── notification.py        # Email notification system
+│   │   └── history.py             # Historical data tracking
+│   │
+│   ├── 📁 database/                # Data Access Layer
+│   │   ├── __init__.py
+│   │   ├── connection.py          # Database connection & session management
+│   │   └── models.py              # SQLAlchemy ORM models
+│   │
+│   ├── 📁 schemas/                 # Data Validation Layer
+│   │   ├── __init__.py
+│   │   └── stock.py               # Pydantic models for API validation
+│   │
+│   └── 📁 core/                    # Core Configuration
+│       ├── __init__.py
+│       └── config.py              # Application configuration
 │
-├── 📁 tests/                   # Test Suite
+├── 📁 scripts/                     # Utility Scripts
+│   ├── test_database.py           # Database integration tests
+│   └── check_gitignore.sh         # Pre-commit .gitignore validator
+│
+├── 📁 tests/                       # Test Suite
 │   ├── __init__.py
-│   └── test_api.py            # API endpoint tests
+│   └── test_api.py                # API endpoint tests
 │
-├── 📁 data/                    # Data files (gitignored)
-│   └── analysis_history.json  # Historical analysis records
+├── 📁 data/                        # Data files (gitignored)
+│   └── analysis_history.json      # Historical analysis records
 │
-├── 📄 api.py                   # FastAPI Routes
-├── 📄 schemas.py               # Pydantic Models (API validation)
-├── 📄 fetch_data.py            # Market data fetching (yfinance)
-├── 📄 strategy.py              # Turtle Trading Strategy implementation
-├── 📄 notification.py          # Email notification system
-├── 📄 config.py                # Configuration management
-├── 📄 history.py               # Historical data tracking
-├── 📄 main.py                  # Application entry point
-├── 📄 test_database.py         # Database integration tests
-│
-├── 📄 requirements.txt         # Python dependencies
-├── 📄 .env.example             # Environment variables template
-├── 📄 .gitignore               # Git ignore rules
-└── 📄 README.md                # Project documentation
+├── 📄 requirements.txt             # Python dependencies
+├── 📄 .env.example                 # Environment variables template
+├── 📄 .gitignore                   # Git ignore rules
+└── 📄 README.md                    # Project documentation
 ```
 
 ### Architecture Layers
@@ -337,24 +358,50 @@ def turtle_strategy(data: pd.DataFrame, entry_period=20, exit_period=10):
 
 ```
 turtle-trading-strategy/
-├── database/              # Database layer
+│
+├── 📁 app/                          # Main application package
+│   ├── __init__.py                 # Package initialization
+│   ├── main.py                     # Application entry point
+│   │
+│   ├── 📁 api/                     # API Layer
+│   │   ├── __init__.py
+│   │   └── routes.py               # FastAPI endpoints
+│   │
+│   ├── 📁 services/                # Business Logic Layer
+│   │   ├── __init__.py
+│   │   ├── fetch_data.py          # Market data fetching
+│   │   ├── strategy.py            # Trading strategy logic
+│   │   ├── notification.py        # Email notifications
+│   │   └── history.py             # Historical tracking
+│   │
+│   ├── 📁 database/                # Data Access Layer
+│   │   ├── __init__.py
+│   │   ├── connection.py          # DB connection & session
+│   │   └── models.py              # SQLAlchemy ORM models
+│   │
+│   ├── 📁 schemas/                 # Data Validation Layer
+│   │   ├── __init__.py
+│   │   └── stock.py               # Pydantic models
+│   │
+│   └── 📁 core/                    # Core Configuration
+│       ├── __init__.py
+│       └── config.py              # App configuration
+│
+├── 📁 scripts/                     # Utility scripts
+│   ├── test_database.py           # Database tests
+│   └── check_gitignore.sh         # Pre-commit checker
+│
+├── 📁 tests/                       # Test suite
 │   ├── __init__.py
-│   ├── connection.py     # DB connection & session
-│   └── models.py         # SQLAlchemy models
-├── tests/                # Test suite
-│   └── test_api.py
-├── data/                 # Historical data (gitignored)
-├── api.py                # FastAPI routes
-├── schemas.py            # Pydantic models
-├── fetch_data.py         # Market data fetching
-├── strategy.py           # Trading strategy logic
-├── notification.py       # Email notifications
-├── config.py             # Configuration management
-├── main.py               # Application entry point
-├── test_database.py      # Database tests
-├── requirements.txt      # Python dependencies
-├── .env.example          # Environment template
-└── README.md             # This file
+│   └── test_api.py                # API tests
+│
+├── 📁 data/                        # Data files (gitignored)
+│   └── analysis_history.json      # Historical records
+│
+├── 📄 requirements.txt             # Python dependencies
+├── 📄 .env.example                 # Environment template
+├── 📄 .gitignore                   # Git ignore rules
+└── 📄 README.md                    # This file
 ```
 
 ---
@@ -373,13 +420,13 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📝 License
 
-not yet
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## 👤 Author
 
-**Ying Lu**
+**Luying**
 - GitHub: [@lareinalY](https://github.com/lareinalY)
 - Email: lareina6145@gmail.com
 
