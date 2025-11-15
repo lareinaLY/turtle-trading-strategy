@@ -37,3 +37,10 @@ data/
 *.old
 *.backup
 *.bak
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/.env.local
+*.pyc
+*.log

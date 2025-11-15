@@ -4,7 +4,7 @@ API 路由 - 集成数据库版本
 这个文件定义了所有的 API 端点，现在所有操作都会保存到数据库
 """
 
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from typing import List, Optional
@@ -18,14 +18,9 @@ from app.services.strategy import turtle_strategy
 from app.database.connection import get_db
 from app.database.models import Stock, AlertHistory
 
-app = FastAPI(
-    title="海龟交易策略 API",
-    description="基于海龟法则的股票分析系统，支持数据库存储",
-    version="2.0.0"
-)
+router = APIRouter()
 
-
-@app.get("/")
+@router.get("/")
 def root():
     """根路径 - API 信息"""
     return {
@@ -41,7 +36,7 @@ def root():
     }
 
 
-@app.post("/analyze", response_model=StockResponse)
+@router.post("/analyze", response_model=StockResponse)
 def analyze_stock(
         request: StockRequest,
         db: Session = Depends(get_db)
@@ -142,7 +137,7 @@ def analyze_stock(
         raise HTTPException(status_code=500, detail=f"分析失败: {str(e)}")
 
 
-@app.get("/history", response_model=List[HistoryResponse])
+@router.get("/history", response_model=List[HistoryResponse])
 def get_history(
         symbol: Optional[str] = None,
         limit: int = 10,
@@ -189,7 +184,7 @@ def get_history(
         raise HTTPException(status_code=500, detail=f"查询失败: {str(e)}")
 
 
-@app.get("/stocks")
+@router.get("/stocks")
 def get_stocks(
         active_only: bool = True,
         db: Session = Depends(get_db)
@@ -230,7 +225,7 @@ def get_stocks(
         raise HTTPException(status_code=500, detail=f"查询失败: {str(e)}")
 
 
-@app.get("/stocks/{symbol}")
+@router.get("/stocks/{symbol}")
 def get_stock_detail(
         symbol: str,
         db: Session = Depends(get_db)
@@ -287,7 +282,7 @@ def get_stock_detail(
         raise HTTPException(status_code=500, detail=f"查询失败: {str(e)}")
 
 
-@app.delete("/stocks/{symbol}")
+@router.delete("/stocks/{symbol}")
 def delete_stock(
         symbol: str,
         db: Session = Depends(get_db)
@@ -328,7 +323,7 @@ def delete_stock(
         raise HTTPException(status_code=500, detail=f"删除失败: {str(e)}")
 
 
-@app.get("/health")
+@router.get("/health")
 def health_check(db: Session = Depends(get_db)):
     """
     健康检查 - 检查 API 和数据库是否正常

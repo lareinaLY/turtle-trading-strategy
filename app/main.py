@@ -6,6 +6,24 @@ FastAPI 应用入口文件
 
 import sys
 from pathlib import Path
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+
+# CORS配置
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # 允许前端访问
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# 导入并注册路由
+from app.api.routes import router as api_router
+app.include_router(api_router)
 
 # 添加项目根目录到 Python 路径（重要！）
 project_root = Path(__file__).parent.parent
